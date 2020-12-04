@@ -1,26 +1,68 @@
-import firebase from 'firebase/app'; 
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
+import 'firebase/database';
 
-import 'firebase/firestore';    //for db
-import 'firebase/auth'; //authentication
 
-const config={
-    apiKey: "AIzaSyC7iHrmj5CNtEus8E3rQ0dIkUO1Jfwi23w",
-    authDomain: "crown-db-52eab.firebaseapp.com",
-    databaseURL: "https://crown-db-52eab.firebaseio.com",
-    projectId: "crown-db-52eab",
-    storageBucket: "crown-db-52eab.appspot.com",
-    messagingSenderId: "657884749385",
-    appId: "1:657884749385:web:ce25206edb914be645a998",
-    measurementId: "G-4KBJ72DH19"
-  };
+const config = {
+  apiKey: "AIzaSyA6NpmhInXCJbO0pAeV4S-T2dhnDYQNokw",
+  authDomain: "crwn-db-1053d.firebaseapp.com",
+  databaseURL: "https://crwn-db-1053d.firebaseio.com",
+  projectId: "crwn-db-1053d",
+  storageBucket: "crwn-db-1053d.appspot.com",
+  messagingSenderId: "745287621652",
+  appId: "1:745287621652:web:1552c93de25c81e072db01",
+  measurementId: "G-DECY8HMJXL"
+};
 
-firebase.initializeApp(config); //initialising
+firebase.initializeApp(config);
 
-export const auth= firebase.auth();
+export const createUserProfileDocument = async (userAuth,additionalData) => {
+  console.log(additionalData);
+  console.log(userAuth);
+  if (!userAuth) return;
+
+  //const userRef2 = firestore.doc(`users/${userAuth.uid}`);
+
+  const userRef2= firebase.database().ref(`users/${userAuth.uid}`);
+  //console.log(userRef2)
+  
+  const snapShot = await userRef2.get();
+  //console.log(snapShot);
+  if (snapShot.exists) {
+
+      const {displayName,email} =userAuth
+      // var displayName;
+      // const email=userAuth;
+      
+      // userAuth.displayName!==null?  displayName= userAuth :displayName=additionalData ;
+      // console.log(displayName,email);
+      //not to use new Date()
+      const createdAt= Date();
+      /* if(displayName!==null){ */
+      try {
+        await userRef2.set({
+          displayName,
+          email,
+          createdAt,   
+          ...additionalData
+        });
+      } catch (error) {
+        console.log('error creating user', error.message);
+      }
+    }
+  
+  return userRef2;
+};
+
+
+export const auth = firebase.auth();
 export const firestore = firebase.firestore();
-
-const provider =new firebase.auth.GoogleAuthProvider(); //access to authentication lib
-provider.setCustomParameters({prompt:'select_account'});    //custom pop parameter
-export const signInWithGoogle=()=>auth.signInWithPopup(provider);
+// const ref=firestore.collection('users');
+// console.log(ref);
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export default firebase;
+

@@ -11,68 +11,50 @@ import Header from './components/header/header.component.jsx';
 import {auth, createUserProfileDocument} from './firebase/firebase.utils';
 
 class App extends React.Component {
-
-  constructor(){
+  constructor() {
     super();
 
-    this.state={
-      currentUser:null,
-      
-    }
+    this.state = {
+      currentUser: null
+    };
   }
-  
-  unsubcribeFromAuth =null;
-  
-  componentDidMount(){
-    this.unsubcribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-        //createUserProfileDocument(userAuth);
-        //console.log(userAuth);
-        //this.setState({currentUser:user});
-        if(userAuth){
-          const userRef2= await createUserProfileDocument(userAuth);
-          //console.log(userRef2);
-          // await userRef2.onSnapshot(snapshot =>{
-          // console.log(snapshot);
-          // })
-          userRef2.once("value").then((snapshot)=> {
-             const data = snapshot.key;
-              console.log(snapshot.val());
-             //console.log(data); // data === "hello"
-              this.setState({
-                currentUser:{
-                id:data,
-                ...snapshot.val()
-                }
-              },()=>{
-                console.log(this.state); 
-              })
-            
+
+  unsubscribeFromAuth = null;
+
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
           });
-          
-          /* console.log(this.state); */
-        }
-        
-        this.setState({currentUser:userAuth});
-        console.log(this.state);
-      })
-      
+        });
+      }
+
+      this.setState({ currentUser: userAuth });
+    });
   }
-  
-  componentWillUnmount(){
-    //this.unsubcribeFromAuth(); //to get null
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
   }
-  
-  render(){
+
+  render() {
     return (
-        <div>
-          <Header currentUser={this.state.currentUser}/>
-          <Switch>
+      <div>
+        <Header currentUser={this.state.currentUser} />
+        <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/sh' component={ShopPage} />
+          <Route path='/shop' component={ShopPage} />
           <Route path='/signin' component={SignInAndSignUpPage} />
-          </Switch>
-        </div>
-      );
+        </Switch>
+      </div>
+    );
   }
 }
 

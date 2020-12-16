@@ -1,18 +1,15 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-//import 'firebase/database';
-
 
 const config = {
-  apiKey: "AIzaSyA6NpmhInXCJbO0pAeV4S-T2dhnDYQNokw",
-    authDomain: "crwn-db-1053d.firebaseapp.com",
-    databaseURL: "https://crwn-db-1053d.firebaseio.com",
-    projectId: "crwn-db-1053d",
-    storageBucket: "crwn-db-1053d.appspot.com",
-    messagingSenderId: "745287621652",
-    appId: "1:745287621652:web:1552c93de25c81e072db01",
-    measurementId: "G-DECY8HMJXL"
+  apiKey: "AIzaSyCcq9Kh19lS1xHx5JWkFWVULu9rJrS4ckU",
+  authDomain: "crwn-db-515b1.firebaseapp.com",
+  projectId: "crwn-db-515b1",
+  storageBucket: "crwn-db-515b1.appspot.com",
+  messagingSenderId: "78816694063",
+  appId: "1:78816694063:web:fe2d414da3b0f63f645bda",
+  measurementId: "G-JENRDFML47"
 };
 
 firebase.initializeApp(config);
@@ -23,9 +20,10 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   const userRef = firestore.doc(`users/${userAuth.uid}`);
 
   const snapShot = await userRef.get();
-
+console.log(snapShot);
   if (!snapShot.exists) {
     const { displayName, email } = userAuth;
+    console.log(displayName);
     const createdAt = new Date();
     try {
       await userRef.set({
@@ -50,4 +48,3 @@ provider.setCustomParameters({ prompt: 'select_account' });
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export default firebase;
-

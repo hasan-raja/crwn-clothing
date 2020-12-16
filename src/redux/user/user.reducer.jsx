@@ -1,14 +1,15 @@
+//Initial State of user obj as null same in react this.state
 const INITIAL_STATE = {
     currentUser:null,
 }
 
-
+//action is like current_state
 const userReducer =(state = INITIAL_STATE ,action)=> {
     switch (action.type) {
         case 'SET_CURRENT_USER':
             return {
                 ...state,
-                currentUser:action.payload
+                currentUser: action.payload //payload re render the val
             }
                         
         default:
@@ -18,4 +19,4 @@ const userReducer =(state = INITIAL_STATE ,action)=> {
 
 }
 
-export default userReducer;
+export default userReducer; 

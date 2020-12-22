@@ -73,9 +73,6 @@ const mapDispatchToProp = dispatch =>({
   setCurrentUser:user=> dispatch(setCurrentUser(user))
 })
 
-// console.log(mapDispatchToProp);
-
-
 export default connect(
   mapStateToProps,
   mapDispatchToProp )(App);
